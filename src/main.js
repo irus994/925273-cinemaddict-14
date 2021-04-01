@@ -61,4 +61,4 @@ const renderShowMoreButton = () => {
 
 renderShowMoreButton();
 
-render(siteMainElement, createPopupFilm(), 'aftereend');
+render(siteMainElement, createPopupFilm(), 'afterend');
