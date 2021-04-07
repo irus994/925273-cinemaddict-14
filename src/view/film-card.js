@@ -1,3 +1,4 @@
+import {getTimeFromMinutes} from '../view/utils.js';
 
 export const createFilmCard = (film) => {
   const {name, description, poster, productionYear, filmGenre, duration, rating, comments} = film;
@@ -6,11 +7,11 @@ export const createFilmCard = (film) => {
           <p class="film-card__rating">${rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${productionYear}</span>
-            <span class="film-card__duration">${duration}</span>
+            <span class="film-card__duration">${getTimeFromMinutes(duration)}</span>
             <span class="film-card__genre">${filmGenre}</span>
           </p>
           <img src="${poster}" alt="" class="film-card__poster">
-          <p class="film-card__description">${description.join(' ').length > 140 ? description.join(' ').slice(0, 138) + '...' : description}</p>
+          <p class="film-card__description">${description.length > 140 ? description.slice(0, 138) + '...' : description}</p>
           <a class="film-card__comments">${comments.length} comments</a>
           <div class="film-card__controls">
             <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>

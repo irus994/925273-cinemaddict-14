@@ -5,7 +5,7 @@ export const createTopFilmBlock = () => {
       <div class="films-list__container">
       </div>
     </section>
-`
+`;
 };
 
 export const creatCommentedFilmBlock = () => {
@@ -15,5 +15,5 @@ export const creatCommentedFilmBlock = () => {
       <div class="films-list__container">
       </div>
     </section>
-`
+`;
 };

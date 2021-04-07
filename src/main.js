@@ -9,6 +9,7 @@ import {createFilmContent} from './view/main-content.js';
 import {createPopupFilm} from './view/popup.js';  //временно отключен
 import {generateFilmData, generateCommentData} from './mock/film-data.js';
 import {createFilmCommentsBlock, createFilmComment} from './view/film-comments.js';
+import {filters} from './mock/filter-data.js';
 
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
@@ -29,7 +30,7 @@ render(siteMainElement, createFilmContent(), 'afterbegin');
 const mainFilmContent = siteMainElement.querySelector('.films');
 
 render(siteMainElement, createSortList(), 'afterbegin');
-render(siteMainElement, createSiteMenuTemplate(), 'afterbegin');
+render(siteMainElement, createSiteMenuTemplate(filters, films), 'afterbegin');
 render(siteHeaderElement, createUserRank(), 'beforeend');
 
 // отрисовка основного блока с карточками фильмов
@@ -40,7 +41,7 @@ for (let i = 0; i < FILMS_COUNT_START; i++) {
 }
 
 //отрисовка блока Top rated
-const renderTopFilmBlock = () => {
+{
   const CARD_COUNT = 2;
   render(mainFilmContent, createTopFilmBlock(), 'beforeend');
   const topFilmBlock = document.querySelector('.films-list--extra');
@@ -48,11 +49,10 @@ const renderTopFilmBlock = () => {
   for (let i = 0; i < CARD_COUNT; i++) {
     render(filmTopCardContainer, createFilmCard(films[i]), 'beforeend');
   }
-};
-renderTopFilmBlock();
+}
 
 //отрисовка блока Most commented
-const renderCommentedFilmBlock = () => {
+{
   const CARD_COUNT = 2;
   render(mainFilmContent, creatCommentedFilmBlock(), 'beforeend');
   const commentFilmBlock = document.querySelector('.films-list--extra:last-child');
@@ -60,8 +60,7 @@ const renderCommentedFilmBlock = () => {
   for (let i = 0; i < CARD_COUNT; i++) {
     render(filmCommentCardContainer, createFilmCard(films[i]), 'beforeend');
   }
-};
-renderCommentedFilmBlock();
+}
 
 
 // Загрузка фильмов по нажатию кнопки
@@ -85,14 +84,13 @@ if (FILMS_COUNT > FILMS_COUNT_START) {
 }
 
 // Отрисовка попапа с полным описпнием фильма
-const renderPopupFilm = () => {
+{
   const COMMENTS_COUNT = 4;
   render(siteMainElement, createPopupFilm(films[1]), 'afterend');//временно отключен
   const popupBlock = document.querySelector('.film-details__bottom-container');
   render(popupBlock, createFilmCommentsBlock(), 'beforeend');
   const filmCommentsList = popupBlock.querySelector('.film-details__comments-list');
-  for (let i = 0; i <= COMMENTS_COUNT; i++) {
+  for (let i = 0; i < COMMENTS_COUNT; i++) {
     render(filmCommentsList, createFilmComment(comments[i]), 'afterend');
   }
-};
-renderPopupFilm();
+}

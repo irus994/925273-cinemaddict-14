@@ -1,3 +1,4 @@
+import {getTimeFromMinutes, generateFilmDateRelease} from '../view/utils.js';
 
 export const createPopupFilm = (film) => {
   const {name, data, duration, description, poster, director, screenwriters, actors, ageRating, filmGenre, rating, country, originName} = film;
@@ -42,11 +43,11 @@ export const createPopupFilm = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${data}</td>
+                  <td class="film-details__cell">${generateFilmDateRelease(data)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${getTimeFromMinutes(duration)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
@@ -54,11 +55,9 @@ export const createPopupFilm = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">${filmGenre.length > 1 ? 'Genres' : 'Genre' }</td>
-                  <td class="film-details__cell">
-                    <span class="film-details__genre">${filmGenre[0]}</span>
-                    <span class="film-details__genre">${filmGenre[1] ? filmGenre[1] : ''}</span>
-                    <span class="film-details__genre">${filmGenre[2] ? filmGenre[1] : ''}</span></td>
+                  <td class="film-details__cell">${filmGenre.map((genre) => `<span>${genre}</span>`).join(' ')}</td>
                 </tr>
+
               </table>
 
               <p class="film-details__film-description">

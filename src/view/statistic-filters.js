@@ -17,5 +17,5 @@ export const createStatisticFilter = () => {
 
       <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
       <label for="statistic-year" class="statistic__filters-label">Year</label>
-    </form>`
+    </form>`;
 };
