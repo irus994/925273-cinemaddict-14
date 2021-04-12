@@ -24,6 +24,48 @@ const FILMS_COUNT_START = 5;
 const COMMENTS_COUNT = 4;
 let renderedFilmCount = FILMS_COUNT_START;
 
+//генерция попапа
+const createPopupBlock = (film) => {
+  const COMMENTS_COUNT = 4;
+  const popupFilm = new PopupFilmView(film);
+  const popupBlock = popupFilm.getElement().querySelector('.film-details__bottom-container');
+  const filmCommentsBlock = new FilmCommentsBlockView();
+  renderElement(popupBlock, filmCommentsBlock.getElement(), RenderPosition.BEFOREEND);
+  const filmCommentsList = filmCommentsBlock.getElement().querySelector('.film-details__comments-list');
+
+  for (let i = 0; i < COMMENTS_COUNT; i++) {
+    renderElement(filmCommentsList, new FilmCommentView(comments[i]).getElement(), RenderPosition.BEFOREEND);
+  }
+  return popupFilm;
+};
+
+//отрисовка карточки
+const renderFilmCard = (container, film, position) => {
+  const filmCard = new FilmCardView(film);
+  renderElement(container, filmCard.getElement(), position);
+
+  const filmPopup = createPopupBlock(film);
+
+  //открытие попапа
+  const openPopup = () => {
+    siteBodyElement.appendChild(filmPopup.getElement());
+    siteBodyElement.classList.add('hide-overflow');
+  };
+
+  filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', openPopup);
+  filmCard.getElement().querySelector('.film-card__title').addEventListener('click', openPopup);
+  filmCard.getElement().querySelector('.film-card__comments').addEventListener('click', openPopup);
+
+  //закрытие попапа
+  const closePopup = () => {
+    siteBodyElement.removeChild(filmPopup.getElement());
+    siteBodyElement.classList.remove('hide-overflow');
+  };
+
+  const popupCloseButton = filmPopup.getElement().querySelector('.film-details__close-btn');
+  popupCloseButton.addEventListener('click', closePopup);
+};
+
 const films = new Array(FILMS_COUNT).fill().map(generateFilmData);
 const comments = new Array(COMMENTS_COUNT).fill().map(generateCommentData);
 
@@ -40,7 +82,7 @@ const filmCardContainerComponent = new FilmCardContainerView();
 renderElement(maimFilmContent.getElement(), filmCardContainerComponent.getElement(), RenderPosition.BEFOREEND);
 const filmCardContainer = filmCardContainerComponent.getElement().querySelector('.films-list__container');
 for (let i = 0; i < FILMS_COUNT_START; i++) {
-  renderElement(filmCardContainer, new FilmCardView(films[i]).getElement(), RenderPosition.BEFOREEND);
+  renderFilmCard(filmCardContainer, films[i], RenderPosition.BEFOREEND);
 }
 
 // отрисовка блока Top rated
@@ -50,7 +92,7 @@ for (let i = 0; i < FILMS_COUNT_START; i++) {
   const topFilmBlock = document.querySelector('.films-list--extra');
   const filmTopCardContainer = topFilmBlock.querySelector('.films-list__container');
   for (let i = 0; i < CARD_COUNT; i++) {
-    renderElement(filmTopCardContainer, new FilmCardView(films[i]).getElement(), RenderPosition.BEFOREEND);
+    renderFilmCard(filmTopCardContainer, films[i], RenderPosition.BEFOREEND);
   }
 }
 
@@ -61,7 +103,7 @@ for (let i = 0; i < FILMS_COUNT_START; i++) {
   const commentFilmBlock = document.querySelector('.films-list--extra:last-child');
   const filmCommentCardContainer = commentFilmBlock.querySelector('.films-list__container');
   for (let i = 0; i < CARD_COUNT; i++) {
-    renderElement(filmCommentCardContainer, new FilmCardView(films[i]).getElement(), RenderPosition.BEFOREEND);
+    renderFilmCard(filmCommentCardContainer, films[i], RenderPosition.BEFOREEND);
   }
 }
 
@@ -76,7 +118,7 @@ if (FILMS_COUNT > FILMS_COUNT_START) {
     evt.preventDefault();
     films
       .slice(renderedFilmCount, renderedFilmCount + FILMS_COUNT_START)
-      .forEach((film) => renderElement(filmCardContainer, new FilmCardView(film).getElement(), RenderPosition.BEFOREEND));
+      .forEach((film) => renderFilmCard(filmCardContainer, film, RenderPosition.BEFOREEND));
 
     renderedFilmCount = renderedFilmCount + FILMS_COUNT_START;
 
@@ -86,43 +128,3 @@ if (FILMS_COUNT > FILMS_COUNT_START) {
   });
 }
 
-// Отрисовка попапа с полным описпнием фильма
-
-const createPopupBlock = () => {
-  const COMMENTS_COUNT = 4;
-  const popupFilm = new PopupFilmView(films[1]);
-  const popupBlock = popupFilm.getElement().querySelector('.film-details__bottom-container');
-  const filmCommentsBlock = new FilmCommentsBlockView();
-  renderElement(popupBlock, filmCommentsBlock.getElement(), RenderPosition.BEFOREEND);
-  const filmCommentsList = filmCommentsBlock.getElement().querySelector('.film-details__comments-list');
-
-  for (let i = 0; i < COMMENTS_COUNT; i++) {
-    renderElement(filmCommentsList, new FilmCommentView(comments[i]).getElement(), RenderPosition.BEFOREEND);
-  }
-  return popupFilm;
-};
-
-const filmPopup = createPopupBlock();
-
-//открытие попапа
-const openPopup = () => {
-  siteBodyElement.appendChild(filmPopup.getElement());
-  siteBodyElement.classList.add('hide-overflow');
-};
-
-const filmCards = filmCardContainer.querySelectorAll('.film-card');
-for (let i = 0; i < filmCards.length; i++) {
-  filmCards[i].querySelector('.film-card__poster').addEventListener('click', openPopup);
-  filmCards[i].querySelector('.film-card__title').addEventListener('click', openPopup);
-  filmCards[i].querySelector('.film-card__comments').addEventListener('click', openPopup);
-}
-
-//закрытие попапа
-
-const closePopup = () => {
-  siteBodyElement.removeChild(filmPopup.getElement());
-  siteBodyElement.classList.remove('hide-overflow');
-};
-
-const popupCloseButton = filmPopup.getElement().querySelector('.film-details__close-btn');
-popupCloseButton.addEventListener('click', closePopup);
