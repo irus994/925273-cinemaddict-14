@@ -1,22 +1,21 @@
 import {createElement} from './utils';
 
-const createTopFilmBlock = () => {
+const creatCommentedFilmBlock = () => {
   return `
     <section class="films-list films-list--extra">
-      <h2 class="films-list__title">Top rated</h2>
+      <h2 class="films-list__title">Most commented</h2>
       <div class="films-list__container">
       </div>
     </section>
 `;
 };
-
-export default class TopFilmBlockView {
+export default class CommentedFilmBlockView {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createTopFilmBlock();
+    return creatCommentedFilmBlock();
   }
 
   getElement() {

@@ -1,6 +1,7 @@
 import {getTimeFromMinutes, generateFilmDateRelease} from '../view/utils.js';
+import {createElement} from './utils.js';
 
-export const createPopupFilm = (film) => {
+const createPopupFilm = (film) => {
   const {name, data, duration, description, poster, director, screenwriters, actors, ageRating, filmGenre, rating, country, originName} = film;
   return `
 <section class="film-details">
@@ -84,3 +85,25 @@ export const createPopupFilm = (film) => {
       </form>
 </section>`;
 };
+
+export default class PopupFilmView {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createPopupFilm(this._film);
+  }
+
+  getElement() {
+    if (!this._element){
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

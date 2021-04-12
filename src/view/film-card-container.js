@@ -1,20 +1,23 @@
 import {createElement} from './utils.js';
 
-const createSortList = () => {
-  return `<ul class="sort">
-    <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-    <li><a href="#" class="sort__button">Sort by date</a></li>
-    <li><a href="#" class="sort__button">Sort by rating</a></li>
-  </ul>`;
+const createFilmCardContainer = () => {
+  return `
+
+      <section class="films-list">
+        <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+        <div class="films-list__container">
+        </div>
+      </section>
+    `;
 };
 
-export default class sortListView {
+export default class FilmCardContainerView {
   constructor() {
     this._element = null; //что именно тут хранится? какая практическая значимость? почему указан null
   }
 
   getTemplate() {
-    return createSortList();// разметка html  элемента
+    return createFilmCardContainer();
   }
 
   getElement() {
