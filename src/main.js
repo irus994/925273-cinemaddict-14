@@ -13,7 +13,7 @@ import {generateFilmData, generateCommentData} from './mock/film-data.js';
 import FilmCommentsBlockView from './view/film-comment-block.js';
 import FilmCommentView from './view/film-comments.js';
 import {filters} from './mock/filter-data.js';
-import {renderElement, RenderPosition} from './view/utils.js';
+import {renderElement, RenderPosition} from './view/render.js';
 
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
@@ -52,9 +52,7 @@ const renderFilmCard = (container, film, position) => {
     siteBodyElement.classList.add('hide-overflow');
   };
 
-  filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', openPopup);
-  filmCard.getElement().querySelector('.film-card__title').addEventListener('click', openPopup);
-  filmCard.getElement().querySelector('.film-card__comments').addEventListener('click', openPopup);
+  filmCard.setEditClickHandler(openPopup);
 
   //закрытие попапа
   const closePopup = () => {
@@ -62,8 +60,7 @@ const renderFilmCard = (container, film, position) => {
     siteBodyElement.classList.remove('hide-overflow');
   };
 
-  const popupCloseButton = filmPopup.getElement().querySelector('.film-details__close-btn');
-  popupCloseButton.addEventListener('click', closePopup);
+  filmPopup.setEditClickHandler(closePopup);
 };
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilmData);

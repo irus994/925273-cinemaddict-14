@@ -1,5 +1,5 @@
 import {getTimeFromMinutes, generateFilmDateRelease} from '../view/utils.js';
-import {createElement} from './utils.js';
+import AbstractView from './abstract';
 
 const createPopupFilm = (film) => {
   const {name, data, duration, description, poster, director, screenwriters, actors, ageRating, filmGenre, rating, country, originName} = film;
@@ -86,24 +86,24 @@ const createPopupFilm = (film) => {
 </section>`;
 };
 
-export default class PopupFilmView {
+export default class PopupFilmView extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
+    this._editClickHandler = this._editClickHandler.bind(this); // сохраняем контекст
   }
 
   getTemplate() {
     return createPopupFilm(this._film);
   }
 
-  getElement() {
-    if (!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
+  _editClickHandler(evt) {
+    evt.preventDefault(); //зачем здесь удалять действие по умолчанию?
+    this._callback.editClick(); //?
 
-  removeElement() {
-    this._element = null;
+  }
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._editClickHandler);
   }
 }

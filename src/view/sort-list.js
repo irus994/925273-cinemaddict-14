@@ -1,4 +1,4 @@
-import {createElement} from './utils.js';
+import AbstractView from './abstract';
 
 const createSortList = () => {
   return `<ul class="sort">
@@ -8,23 +8,8 @@ const createSortList = () => {
   </ul>`;
 };
 
-export default class sortListView {
-  constructor() {
-    this._element = null; //что именно тут хранится? какая практическая значимость? почему указан null
-  }
-
+export default class sortListView extends AbstractView {
   getTemplate() {
     return createSortList();// разметка html  элемента
-  }
-
-  getElement() {
-    if (!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

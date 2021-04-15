@@ -1,4 +1,5 @@
-import {createElement, getTimeFromMinutes} from './utils.js';
+import {getTimeFromMinutes} from './utils.js';
+import AbstractView from './abstract';
 
 export const createFilmCard = (film) => {
   const {name, description, poster, productionYear, filmGenre, duration, rating, comments} = film;
@@ -21,25 +22,28 @@ export const createFilmCard = (film) => {
         </article>`;
 };
 
-export default class FilmCardView {
+export default class FilmCardView extends AbstractView {
   constructor(film) {
-    this._element = null; //что именно тут хранится? какая практическая значимость? почему указан null
+    super();
     this._film = film;
+    this._editClickHandler = this._editClickHandler.bind(this); // сохраняем контекст
   }
 
   getTemplate() {
     return createFilmCard(this._film);
   }
 
-  getElement() {
-    if (!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault(); //зачем здесь удалять действие по умолчанию?
+    this._callback.editClick(); //?
+
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._editClickHandler);
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._editClickHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._editClickHandler);
   }
 }
 

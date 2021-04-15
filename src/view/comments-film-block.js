@@ -1,4 +1,4 @@
-import {createElement} from './utils';
+import AbstractView from './abstract';
 
 const creatCommentedFilmBlock = () => {
   return `
@@ -9,23 +9,8 @@ const creatCommentedFilmBlock = () => {
     </section>
 `;
 };
-export default class CommentedFilmBlockView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class CommentedFilmBlockView extends AbstractView {
   getTemplate() {
     return creatCommentedFilmBlock();
-  }
-
-  getElement() {
-    if (!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
