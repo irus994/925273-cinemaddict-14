@@ -8,7 +8,7 @@ const createSortList = () => {
   </ul>`;
 };
 
-export default class sortListView extends AbstractView {
+export default class SortListView extends AbstractView {
   getTemplate() {
     return createSortList();// разметка html  элемента
   }

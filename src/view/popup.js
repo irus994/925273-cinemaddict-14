@@ -1,8 +1,8 @@
-import {getTimeFromMinutes, generateFilmDateRelease} from '../view/utils.js';
+import {getTimeFromMinutes, generateFilmDateRelease} from '../utils/utils.js';
 import AbstractView from './abstract';
 
 const createPopupFilm = (film) => {
-  const {name, data, duration, description, poster, director, screenwriters, actors, ageRating, filmGenre, rating, country, originName} = film;
+  const {name, data, duration, description, poster, director, screenwriters, actors, ageRating, filmGenre, rating, country, originName, userDetails} = film;
   return `
 <section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -68,13 +68,13 @@ const createPopupFilm = (film) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" ${userDetails.watchlist ? 'checked' : ''} name="watchlist">
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" ${userDetails.alreadyWatched ? 'checked' : ''} name="watched">
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" ${userDetails.favorite ? 'checked' : ''} name="favorite">
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
@@ -91,6 +91,9 @@ export default class PopupFilmView extends AbstractView {
     super();
     this._film = film;
     this._editClickHandler = this._editClickHandler.bind(this); // сохраняем контекст
+    this._addToWatchListPopupHandler = this._addToWatchListPopupHandler.bind(this);
+    this._addToWatchedPopupHandler = this._addToWatchedPopupHandler.bind(this);
+    this._addToFavoritePopupHandler = this._addToFavoritePopupHandler.bind(this);
   }
 
   getTemplate() {
@@ -98,12 +101,39 @@ export default class PopupFilmView extends AbstractView {
   }
 
   _editClickHandler(evt) {
-    evt.preventDefault(); //зачем здесь удалять действие по умолчанию?
-    this._callback.editClick(); //?
-
+    evt.preventDefault();
+    this._callback.editClick();
   }
-  setEditClickHandler(callback) {
+
+  setCloseClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._editClickHandler);
+  }
+
+  _addToWatchListPopupHandler() {
+    this._callback.addToWatchListPopupClick();
+  }
+
+  setWatchListPopupHandler(callback) {
+    this._callback.addToWatchListPopupClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._addToWatchListPopupHandler);
+  }
+
+  _addToWatchedPopupHandler() {
+    this._callback.addWatchedPopupClick();
+  }
+
+  setWatchedPopupHandler(callback) {
+    this._callback.addWatchedPopupClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._addToWatchedPopupHandler);
+  }
+
+  _addToFavoritePopupHandler() {
+    this._callback.addFavoritePopupClick();
+  }
+
+  setFavoritePopupHandler(callback) {
+    this._callback.addFavoritePopupClick = callback;
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._addToFavoritePopupHandler);
   }
 }

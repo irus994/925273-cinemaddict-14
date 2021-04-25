@@ -67,8 +67,12 @@ const createFilmDescription = () => {
 
 const GET_RANDOM_DATE = new Date(createRandomNumber(1995, 2020), createRandomNumber(1, 12), createRandomNumber(1, 31));
 
+let nextId = 0;
+
 export const generateFilmData = () => {
+  nextId = nextId + 1;
   return {
+    id: nextId,
     name: FILMS_NAMES[createRandomNumber(0, FILMS_NAMES.length - 1)],
     originName: 'Origin: ' + FILMS_NAMES[createRandomNumber(0, FILMS_NAMES.length - 1)],
     director: 'Director Director',
