@@ -3,6 +3,7 @@ import {renderElement, replace, remove, RenderPosition} from '../utils/render.js
 import PopupFilmView from '../view/popup.js';
 import FilmCommentsBlockView from '../view/film-comment-block.js';
 import FilmCommentView from '../view/film-comments.js';
+import SelectReactionView from '../view/select-reaction.js';
 
 const popupStatus = {
   CLOSE: 'CLOSE',
@@ -87,12 +88,14 @@ export default class FilmCard {
     const popupFilm = new PopupFilmView(film);
     const popupBlock = popupFilm.getElement().querySelector('.film-details__bottom-container');
     const filmCommentsBlock = new FilmCommentsBlockView();
+    const selectReaction = new SelectReactionView();
     renderElement(popupBlock, filmCommentsBlock.getElement(), RenderPosition.BEFOREEND);
     const filmCommentsList = filmCommentsBlock.getElement().querySelector('.film-details__comments-list');
 
     for (let i = 0; i < COMMENTS_COUNT; i++) {
       renderElement(filmCommentsList, new FilmCommentView(this._comments[i]), RenderPosition.BEFOREEND);
     }
+    renderElement(popupBlock, selectReaction.getElement(), RenderPosition.BEFOREEND);
     return popupFilm;
   }
 

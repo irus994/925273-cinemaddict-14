@@ -1,5 +1,5 @@
 import {getTimeFromMinutes, generateFilmDateRelease} from '../utils/utils.js';
-import AbstractView from './abstract';
+import AbstractView from './abstract.js';
 
 const createPopupFilm = (film) => {
   const {name, data, duration, description, poster, director, screenwriters, actors, ageRating, filmGenre, rating, country, originName, userDetails} = film;
@@ -86,7 +86,7 @@ const createPopupFilm = (film) => {
 </section>`;
 };
 
-export default class PopupFilmView extends AbstractView {
+export default class PopupFilmView extends  AbstractView {
   constructor(film) {
     super();
     this._film = film;
@@ -125,7 +125,6 @@ export default class PopupFilmView extends AbstractView {
 
   setWatchedPopupHandler(callback) {
     this._callback.addWatchedPopupClick = callback;
-    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._addToWatchedPopupHandler);
   }
 
   _addToFavoritePopupHandler() {
