@@ -4,6 +4,7 @@ import PopupFilmView from '../view/popup.js';
 import FilmCommentsBlockView from '../view/film-comment-block.js';
 import FilmCommentView from '../view/film-comments.js';
 import SelectReactionView from '../view/select-reaction.js';
+import {UpdateType, UserAction} from '../utils/utils.js';
 
 const popupStatus = {
   CLOSE: 'CLOSE',
@@ -23,9 +24,10 @@ export default class FilmCard {
     this._handleAddWatchListClick = this._handleAddWatchListClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
     this._handleAddFavoritesClick = this._handleAddFavoritesClick.bind(this);
+    this._addCommentDeleteHandler = this._addCommentDeleteHandler.bind(this);
+    this._addCommentHandler = this._addCommentHandler.bind(this);
     this._openPopup = this._openPopup.bind(this);
     this._closePopup = this._closePopup.bind(this);
-
   }
 
   init(film, comments) {
@@ -47,6 +49,11 @@ export default class FilmCard {
       replace(this._filmPopup, prevPopup);
       remove(prevPopup);
     }
+  }
+
+  destroy() {
+    remove(this._filmContent);
+    remove(this._filmPopup);
   }
 
   resetView() {
@@ -84,23 +91,32 @@ export default class FilmCard {
   }
 
   _createPopupBlock(film) {
-    const COMMENTS_COUNT = 4;
     const popupFilm = new PopupFilmView(film);
     const popupBlock = popupFilm.getElement().querySelector('.film-details__bottom-container');
     const filmCommentsBlock = new FilmCommentsBlockView();
     const selectReaction = new SelectReactionView();
+    selectReaction.setCommentHandler(this._addCommentHandler);
     renderElement(popupBlock, filmCommentsBlock.getElement(), RenderPosition.BEFOREEND);
     const filmCommentsList = filmCommentsBlock.getElement().querySelector('.film-details__comments-list');
 
-    for (let i = 0; i < COMMENTS_COUNT; i++) {
-      renderElement(filmCommentsList, new FilmCommentView(this._comments[i]), RenderPosition.BEFOREEND);
-    }
+    film.comments.forEach((commentId) => {
+      const comment = this._comments.find((comment) => {
+        return comment.id === commentId;
+      });
+      const filmComment = new FilmCommentView(comment);
+      filmComment.setCommentDeleteHandler(this._addCommentDeleteHandler);
+      renderElement(filmCommentsList, filmComment, RenderPosition.BEFOREEND);
+    });
+
+
     renderElement(popupBlock, selectReaction.getElement(), RenderPosition.BEFOREEND);
     return popupFilm;
   }
 
   _handleAddWatchListClick() {
     this._changeData(
+      UserAction.UPDATE_MOViE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -117,6 +133,8 @@ export default class FilmCard {
 
   _handleAlreadyWatchedClick() {
     this._changeData(
+      UserAction.UPDATE_MOViE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -133,6 +151,8 @@ export default class FilmCard {
 
   _handleAddFavoritesClick() {
     this._changeData(
+      UserAction.UPDATE_MOViE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -144,6 +164,33 @@ export default class FilmCard {
           ),
         },
       ),
+    );
+  }
+
+  _addCommentDeleteHandler(deleteCommentId) {
+    this._changeData(
+      UserAction.UPDATE_MOViE,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: this._film.comments.filter((commentId) => {
+            return commentId !== deleteCommentId;
+          }),
+        },
+      ),
+    );
+  }
+
+  _addCommentHandler(commentData) {
+    this._changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      {
+        movieId: this._film.id,
+        comment: commentData,
+      },
     );
   }
 }

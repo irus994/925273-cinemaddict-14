@@ -24,11 +24,6 @@ export const renderElement = (container, element, place) => {
   }
 };
 
-// уже не используется, но я не готова пока ее удалить
-// export const renderTemplate = (container, template, place) => {
-//   container.insertAdjacentHTML(place, template);
-// };
-
 export const replace = (newChild, oldChild) => {
   if (oldChild instanceof AbstractView) {
     oldChild = oldChild.getElement();

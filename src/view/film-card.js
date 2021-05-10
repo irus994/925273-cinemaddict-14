@@ -37,8 +37,8 @@ export default class FilmCardView extends AbstractView {
   }
 
   _editClickHandler(evt) {
-    evt.preventDefault(); //зачем здесь удалять действие по умолчанию?
-    this._callback.editClick(); //?
+    evt.preventDefault();
+    this._callback.editClick();
 
   }
 
@@ -79,4 +79,3 @@ export default class FilmCardView extends AbstractView {
     this.getElement().querySelector('.film-card__controls-item--favorite').addEventListener('click', this._addToFavoriteHandler);
   }
 }
-

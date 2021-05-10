@@ -1,15 +1,33 @@
 import AbstractView from './abstract';
 
-const createSortList = () => {
+const createSortList = (sorts) => {
   return `<ul class="sort">
-    <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-    <li><a href="#" class="sort__button">Sort by date</a></li>
-    <li><a href="#" class="sort__button">Sort by rating</a></li>
+    ${sorts.map((sort) =>
+    `<li><a href="#" data-sort-type="${sort.type}" class="sort__button ${sort.isActive ? 'sort__button--active' : ''}"> ${sort.name}</a></li>`).join(' ')}
   </ul>`;
 };
 
 export default class SortListView extends AbstractView {
+  constructor(sorts) {
+    super();
+
+    this._sorts = sorts;
+    this._addSortTypeChangeHandle = this._addSortTypeChangeHandle.bind(this);
+  }
+
   getTemplate() {
-    return createSortList();// разметка html  элемента
+    return createSortList(this._sorts);// разметка html  элемента
+  }
+
+  _addSortTypeChangeHandle(evt) {
+    evt.preventDefault();
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
+  }
+
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().querySelectorAll('.sort__button').forEach((item) => {
+      item.addEventListener('click', this._addSortTypeChangeHandle);
+    });
   }
 }

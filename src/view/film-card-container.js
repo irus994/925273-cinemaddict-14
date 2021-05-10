@@ -12,6 +12,9 @@ const createFilmCardContainer = () => {
 };
 
 export default class FilmCardContainerView extends AbstractView {
+  constructor() {
+    super();
+  }
   getTemplate() {
     return createFilmCardContainer();
   }

@@ -6,6 +6,31 @@ export const createElement = (template) => {
   return newElement.firstElementChild;
 };
 
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  FAVORITES: 'favorites',
+  HISTORY: 'history',
+};
+
+export const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
+
+export const UserAction = {
+  ADD_COMMENT: 'add',
+  DELETE_COMMENT: 'delete',
+  UPDATE_MOViE: 'update',
+};
+
 const MONTHS_LIST = [
   'January',
   'February',

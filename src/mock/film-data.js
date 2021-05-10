@@ -43,10 +43,10 @@ const FILMS_GENRES = [
 ];
 
 const COMMENTS_EMOTIONS = [
-  './images/emoji/smile.png',
-  './images/emoji/sleeping.png',
-  './images/emoji/puke.png',
-  './images/emoji/angry.png',
+  'smile',
+  'sleeping',
+  'puke',
+  'angry',
 ];
 
 const ACTORS = [
@@ -97,13 +97,16 @@ export const generateFilmData = () => {
   };
 };
 
-export const generateCommentData = () => {
+let nextIdComment = 0;
+export const generateCommentData = (userData = {}) => {
+  nextIdComment = nextIdComment + 1;
   return  {
-    id: createRandomNumber(1, 3),
+    id: nextIdComment,
     text: 'Среднее кино',
     author: 'Иван',
     emotion: COMMENTS_EMOTIONS[createRandomNumber(0, COMMENTS_EMOTIONS.length - 1)],
     date: '2019/12/31 23:59',
+    ...userData,
   };
 };
 
