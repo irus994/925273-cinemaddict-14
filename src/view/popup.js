@@ -94,6 +94,7 @@ export default class PopupFilmView extends  AbstractView {
     this._addToWatchListPopupHandler = this._addToWatchListPopupHandler.bind(this);
     this._addToWatchedPopupHandler = this._addToWatchedPopupHandler.bind(this);
     this._addToFavoritePopupHandler = this._addToFavoritePopupHandler.bind(this);
+    this._editEscClickHandler = this._editEscClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -108,6 +109,18 @@ export default class PopupFilmView extends  AbstractView {
   setCloseClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._editClickHandler);
+  }
+
+  _editEscClickHandler(evt) {
+    evt.preventDefault();
+    if (evt.keyCode === 27) {
+      this._callback.editEscClick();
+    }
+  }
+
+  setCloseEscHandler(callback) {
+    this._callback.editEscClick = callback;
+    document.addEventListener('keydown', this._editEscClickHandler);
   }
 
   _addToWatchListPopupHandler() {

@@ -1,5 +1,6 @@
+import AbstractView from './abstract.js';
 
-export const createStatisticFilter = () => {
+const createStatisticFilter = () => {
   return `<form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
 
@@ -17,5 +18,30 @@ export const createStatisticFilter = () => {
 
       <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
       <label for="statistic-year" class="statistic__filters-label">Year</label>
-    </form>`;
+    </form>
+
+    <ul class="statistic__text-list">
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">You watched</h4>
+        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+      </li>
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">Total duration</h4>
+        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+      </li>
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">Top genre</h4>
+        <p class="statistic__item-text">Sci-Fi</p>
+      </li>
+    </ul>
+
+    <div class="statistic__chart-wrap">
+      <canvas class="statistic__chart" width="1000"></canvas>
+    </div>`;
 };
+
+export default class StatisticFiltersView extends AbstractView {
+  getTemplate() {
+    return createStatisticFilter();
+  }
+}

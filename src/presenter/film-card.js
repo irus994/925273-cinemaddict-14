@@ -5,6 +5,7 @@ import FilmCommentsBlockView from '../view/film-comment-block.js';
 import FilmCommentView from '../view/film-comments.js';
 import SelectReactionView from '../view/select-reaction.js';
 import {UpdateType, UserAction} from '../utils/utils.js';
+import {Api, AUTHORIZATION, END_POINT} from '../api.js';
 
 const popupStatus = {
   CLOSE: 'CLOSE',
@@ -17,6 +18,7 @@ export default class FilmCard {
     this._siteBodyElement = siteBodyElement;
     this._changeData = changeData;
     this._changeStatus = changeStatus;
+    this._comments = [];
 
     this._filmContent = null;
     this._popupStatus = popupStatus.CLOSE;
@@ -30,9 +32,8 @@ export default class FilmCard {
     this._closePopup = this._closePopup.bind(this);
   }
 
-  init(film, comments) {
+  init(film) {
     this._film = film;
-    this._comments = comments.slice();
 
     const prevFilmContent = this._filmContent;
     const prevPopup = this._filmPopup;
@@ -67,6 +68,19 @@ export default class FilmCard {
     this._siteBodyElement.appendChild(this._filmPopup.getElement());
     this._siteBodyElement.classList.add('hide-overflow');
     this._popupStatus = popupStatus.OPEN;
+    const api = new Api(END_POINT, AUTHORIZATION);
+    api.getComments(this._film)
+      .then((comments) => {
+        this._comments = comments;
+        this._changeData(
+          UserAction.RE_RENDER,
+          UpdateType.PATCH,
+          Object.assign(
+            {},
+            this._film,
+          ),
+        );
+      });
   }
 
   _closePopup () {
@@ -87,6 +101,7 @@ export default class FilmCard {
 
     filmCard.setCloseClickHandler(this._openPopup);
     this._filmPopup.setCloseClickHandler(this._closePopup);
+    this._filmPopup.setCloseEscHandler(this._closePopup);
     return filmCard;
   }
 
@@ -103,6 +118,9 @@ export default class FilmCard {
       const comment = this._comments.find((comment) => {
         return comment.id === commentId;
       });
+      if (comment === undefined) {
+        return;
+      }
       const filmComment = new FilmCommentView(comment);
       filmComment.setCommentDeleteHandler(this._addCommentDeleteHandler);
       renderElement(filmCommentsList, filmComment, RenderPosition.BEFOREEND);

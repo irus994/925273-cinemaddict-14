@@ -1,6 +1,10 @@
+import MoviesModel from './model/movies-model.js';
+
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 const SuccessHTTPStatusRange = {
@@ -8,7 +12,10 @@ const SuccessHTTPStatusRange = {
   MAX: 299,
 };
 
-export default class Api {
+export const AUTHORIZATION = 'Basic gno0dtbN9da8cdr7d';
+export const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
+
+export class Api {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint; //строка запроса
     this._authorization = authorization; //строка авторизации
@@ -16,17 +23,29 @@ export default class Api {
 
   getMovies() {
     return this._load({url: 'movies'})
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then((movies) => {
+        return movies.map(MoviesModel.adaptToClient);
+      });
+  }
+
+  getComments(movie) {
+    return this._load({url: `comments/${movie.id}`})
+      .then(Api.toJSON)
+      .then((comments) => {
+        return comments.map(MoviesModel.adaptCommentToClient);
+      });
   }
 
   updateMovie(movie) {
     return this._load({
-      url: '',
+      url: `movies/${movie.id}`,
       method: Method.PUT,
-      body: JSON.stringify(movie),
+      body: JSON.stringify(MoviesModel.adaptToServer(movie)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then(MoviesModel.adaptToClient);
   }
 
   _load({

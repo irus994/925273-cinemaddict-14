@@ -10,6 +10,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const FilterType = {
@@ -29,6 +30,7 @@ export const UserAction = {
   ADD_COMMENT: 'add',
   DELETE_COMMENT: 'delete',
   UPDATE_MOViE: 'update',
+  RE_RENDER: 're-render',
 };
 
 const MONTHS_LIST = [
