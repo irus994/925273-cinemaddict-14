@@ -31,6 +31,14 @@ export default class SortMoviesPresenter {
     remove(prevSortList);
   }
 
+  destroy() {
+    if (this._sortList === null) {
+      return;
+    }
+    remove(this._sortList);
+    this._sortList = null;
+  }
+
   _handleModelEvent() {
     this.init();
   }

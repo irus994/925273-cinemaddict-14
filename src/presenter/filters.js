@@ -20,11 +20,12 @@ export default class FiltersSiteMenu {
   }
 
   init() {
+    const isEmptyList = false;
     const filters = this._getFilters();
 
     const prevSiteMenu = this._siteMenu;
 
-    this._siteMenu = new SiteMenuView(filters, this._filterModel.getFilter());
+    this._siteMenu = new SiteMenuView(filters, this._filterModel.getFilter(), isEmptyList);
     this._siteMenu.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevSiteMenu === null) {

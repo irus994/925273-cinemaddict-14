@@ -84,6 +84,9 @@ export default class FilmCard {
   }
 
   _closePopup () {
+    if (this._popupStatus === popupStatus.CLOSE) {
+      return;
+    }
     this._siteBodyElement.removeChild(this._filmPopup.getElement());
     this._siteBodyElement.classList.remove('hide-overflow');
     this._popupStatus = popupStatus.CLOSE;

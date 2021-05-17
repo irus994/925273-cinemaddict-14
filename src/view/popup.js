@@ -36,11 +36,11 @@ const createPopupFilm = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${screenwriters}</td>
+                  <td class="film-details__cell">${screenwriters.map((screenwriter) => `${screenwriter}`).join(', ')}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Actors</td>
-                  <td class="film-details__cell">${actors}</td>
+                  <td class="film-details__cell">${actors.map((actor) => `${actor}`).join(', ')}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
@@ -112,8 +112,8 @@ export default class PopupFilmView extends  AbstractView {
   }
 
   _editEscClickHandler(evt) {
-    evt.preventDefault();
     if (evt.keyCode === 27) {
+      evt.preventDefault();
       this._callback.editEscClick();
     }
   }
@@ -138,6 +138,7 @@ export default class PopupFilmView extends  AbstractView {
 
   setWatchedPopupHandler(callback) {
     this._callback.addWatchedPopupClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._addToWatchedPopupHandler);
   }
 
   _addToFavoritePopupHandler() {

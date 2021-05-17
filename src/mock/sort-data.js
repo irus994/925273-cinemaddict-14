@@ -12,7 +12,7 @@ export const sort = {
     name: 'Sort by date',
     href: '#',
     compare: (film1, film2) => {
-      return film1.productionYear - film2.productionYear;
+      return film2.data.getFullYear() - film1.data.getFullYear();
     },
   },
   [SortType.RATING]: {

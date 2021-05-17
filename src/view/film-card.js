@@ -1,15 +1,16 @@
 import {getTimeFromMinutes} from '../utils/utils.js';
 import AbstractView from './abstract';
 
+
 export const createFilmCard = (film) => {
-  const {name, description, poster, productionYear, filmGenre, duration, rating, comments, userDetails} = film;
+  const {name, description, poster, data, filmGenre, duration, rating, comments, userDetails} = film;
   return `<article class="film-card">
           <h3 class="film-card__title">${name}</h3>
           <p class="film-card__rating">${rating}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${productionYear}</span>
+            <span class="film-card__year">${data.getFullYear()}</span>
             <span class="film-card__duration">${getTimeFromMinutes(duration)}</span>
-            <span class="film-card__genre">${filmGenre}</span>
+            <span class="film-card__genre">${filmGenre.slice(0, 2).map((genre) => `<span>${genre}</span>`).join(' ')}</span>
           </p>
           <img src="${poster}" alt="" class="film-card__poster">
           <p class="film-card__description">${description.length > 140 ? description.slice(0, 138) + '...' : description}</p>

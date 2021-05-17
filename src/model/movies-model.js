@@ -53,7 +53,6 @@ export default class MoviesModel extends Observer {
         ageRating: movie.film_info.age_rating,
         poster: movie.film_info.poster,
         description: movie.film_info.description,
-        productionYear: movie.film_info.release.date,
         filmGenre: movie.film_info.genre,
         duration: movie.film_info.runtime,
         rating: movie.film_info.total_rating,
