@@ -13,6 +13,10 @@ const createUserRank = (numberOfFilmsWatched) => {
 
 
 export default class UserRankView extends AbstractView {
+  constructor() {
+    super();
+    // this._numberOfFilmsWatched = numberOfFilmsWatched;
+  }
 
   getTemplate() {
     return createUserRank(this._numberOfFilmsWatched);

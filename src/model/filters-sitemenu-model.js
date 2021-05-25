@@ -1,5 +1,5 @@
 import Observer from '../utils/observer.js';
-import {FilterType} from '../utils/utils.js';
+import {FilterType} from '../utils/const.js';
 
 export default class MoviesFilterMenu extends Observer {
   constructor() {

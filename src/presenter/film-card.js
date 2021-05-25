@@ -4,7 +4,7 @@ import PopupFilmView from '../view/popup.js';
 import FilmCommentsBlockView from '../view/film-comment-block.js';
 import FilmCommentView from '../view/film-comments.js';
 import SelectReactionView from '../view/select-reaction.js';
-import {UpdateType, UserAction} from '../utils/utils.js';
+import {UpdateType, UserAction} from '../utils/const.js';
 import {Api, AUTHORIZATION, END_POINT} from '../api.js';
 
 const popupStatus = {
@@ -52,6 +52,10 @@ export default class FilmCard {
     }
   }
 
+  addComment(newComment) {
+    this._comments.push(newComment);
+  }
+
   destroy() {
     remove(this._filmContent);
     remove(this._filmPopup);
@@ -65,6 +69,7 @@ export default class FilmCard {
 
   _openPopup() {
     this._changeStatus();
+    this._filmPopup.setCloseEscHandler(this._closePopup);
     this._siteBodyElement.appendChild(this._filmPopup.getElement());
     this._siteBodyElement.classList.add('hide-overflow');
     this._popupStatus = popupStatus.OPEN;
@@ -87,6 +92,7 @@ export default class FilmCard {
     if (this._popupStatus === popupStatus.CLOSE) {
       return;
     }
+    this._filmPopup.removeCloseEscHandler();
     this._siteBodyElement.removeChild(this._filmPopup.getElement());
     this._siteBodyElement.classList.remove('hide-overflow');
     this._popupStatus = popupStatus.CLOSE;
@@ -104,14 +110,13 @@ export default class FilmCard {
 
     filmCard.setCloseClickHandler(this._openPopup);
     this._filmPopup.setCloseClickHandler(this._closePopup);
-    this._filmPopup.setCloseEscHandler(this._closePopup);
     return filmCard;
   }
 
   _createPopupBlock(film) {
     const popupFilm = new PopupFilmView(film);
     const popupBlock = popupFilm.getElement().querySelector('.film-details__bottom-container');
-    const filmCommentsBlock = new FilmCommentsBlockView();
+    const filmCommentsBlock = new FilmCommentsBlockView(film.comments.length);
     const selectReaction = new SelectReactionView();
     selectReaction.setCommentHandler(this._addCommentHandler);
     renderElement(popupBlock, filmCommentsBlock.getElement(), RenderPosition.BEFOREEND);
@@ -124,7 +129,7 @@ export default class FilmCard {
       if (comment === undefined) {
         return;
       }
-      const filmComment = new FilmCommentView(comment);
+      const filmComment = new FilmCommentView(FilmCommentView.parseCommentToData(comment));
       filmComment.setCommentDeleteHandler(this._addCommentDeleteHandler);
       renderElement(filmCommentsList, filmComment, RenderPosition.BEFOREEND);
     });
@@ -163,7 +168,10 @@ export default class FilmCard {
           userDetails: Object.assign(
             {},
             this._film.userDetails,
-            {alreadyWatched: !this._film.userDetails.alreadyWatched},
+            {
+              alreadyWatched: !this._film.userDetails.alreadyWatched,
+              watchingDate: this._film.userDetails.alreadyWatched ? null : new Date(),
+            },
           ),
         },
       ),
@@ -189,18 +197,11 @@ export default class FilmCard {
   }
 
   _addCommentDeleteHandler(deleteCommentId) {
+    const update = {movieId: this._film.id, commentId: deleteCommentId};
     this._changeData(
-      UserAction.UPDATE_MOViE,
+      UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          comments: this._film.comments.filter((commentId) => {
-            return commentId !== deleteCommentId;
-          }),
-        },
-      ),
+      update,
     );
   }
 

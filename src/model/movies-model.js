@@ -18,6 +18,18 @@ export default class MoviesModel extends Observer {
     return this._movies;
   }
 
+  deleteComment(updateType, movieId, commentId) {
+    const movie = this._movies.find((movie) => movie.id === movieId);
+    const comments = movie.comments.filter((comment) => comment !== commentId);
+    this.updateMovie(updateType, Object.assign(
+      {},
+      movie,
+      {
+        comments: comments,
+      },
+    ));
+  }
+
   updateMovie(updateType, update) {
     const index = this._movies.findIndex((movie) => movie.id === update.id);
 
@@ -60,7 +72,7 @@ export default class MoviesModel extends Observer {
           watchlist: movie.user_details.watchlist,
           alreadyWatched: movie.user_details.already_watched,
           favorite: movie.user_details.favorite,
-          watchingDate: movie.user_details.watching_date,
+          watchingDate: movie.user_details.watching_date ? new Date(movie.user_details.watching_date) : null,
         },
       },
     );
@@ -111,7 +123,7 @@ export default class MoviesModel extends Observer {
           'watchlist': movie.userDetails.watchlist,
           'already_watched': movie.userDetails.alreadyWatched,
           'favorite': movie.userDetails.favorite,
-          'watching_date': movie.userDetails.watchingDate,
+          'watching_date': movie.userDetails.watchingDate ? movie.userDetails.watchingDate.toISOString() : null,
         },
       },
     );
@@ -133,5 +145,19 @@ export default class MoviesModel extends Observer {
     delete adaptedMovie.userDetails.favorite;
 
     return adaptedMovie;
+  }
+
+  static adaptCommentToServer(comment) {
+    const adaptedComment = Object.assign(
+      {},
+      comment,
+      {
+        'comment': comment.text,
+      },
+    );
+
+    delete adaptedComment.text;
+
+    return adaptedComment;
   }
 }

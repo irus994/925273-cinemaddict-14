@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {FilterType} from '../utils/utils.js';
+import {FilterType} from '../utils/const.js';
 
 const createSiteMenuTemplate = (filters,  isEmptyList) => {
   return `<nav class="main-navigation">
@@ -20,6 +20,7 @@ export default class SiteMenuView extends AbstractView {
     this._filters = filters;
 
     this._addFilterTypeChangeHandler = this._addFilterTypeChangeHandler.bind(this);
+    this._addStatisticClickHandler = this._addStatisticClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -37,4 +38,15 @@ export default class SiteMenuView extends AbstractView {
       item.addEventListener('click', this._addFilterTypeChangeHandler);
     });
   }
+
+  _addStatisticClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.statisticClick();
+  }
+
+  setStatisticHandler(callback) {
+    this._callback.statisticClick = callback;
+    this.getElement().querySelector('.main-navigation__additional').addEventListener('click', this._addStatisticClickHandler);
+  }
+
 }

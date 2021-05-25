@@ -37,6 +37,24 @@ export class Api {
       });
   }
 
+  addComment(comment, movieId)  {
+    return this._load({
+      url: `comments/${movieId}`,
+      method: Method.POST,
+      body: JSON.stringify(MoviesModel.adaptCommentToServer(comment)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON)
+      .then(MoviesModel.adaptCommentToClient);
+  }
+
+  deleteComment(commentId) {
+    return this._load({
+      url: `comments/${commentId}`,
+      method: Method.DELETE,
+    });
+  }
+
   updateMovie(movie) {
     return this._load({
       url: `movies/${movie.id}`,

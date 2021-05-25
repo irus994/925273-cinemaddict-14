@@ -1,5 +1,6 @@
-import {getTimeFromMinutes, generateFilmDateRelease} from '../utils/utils.js';
+import {getTimeFromMinutes} from '../utils/utils.js';
 import AbstractView from './abstract.js';
+import dayjs from 'dayjs';
 
 const createPopupFilm = (film) => {
   const {name, data, duration, description, poster, director, screenwriters, actors, ageRating, filmGenre, rating, country, originName, userDetails} = film;
@@ -44,7 +45,7 @@ const createPopupFilm = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${generateFilmDateRelease(data)}</td>
+                  <td class="film-details__cell">${dayjs(data).format('DD MMMM YYYY')}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -121,6 +122,10 @@ export default class PopupFilmView extends  AbstractView {
   setCloseEscHandler(callback) {
     this._callback.editEscClick = callback;
     document.addEventListener('keydown', this._editEscClickHandler);
+  }
+
+  removeCloseEscHandler() {
+    document.removeEventListener('keydown', this._editEscClickHandler);
   }
 
   _addToWatchListPopupHandler() {

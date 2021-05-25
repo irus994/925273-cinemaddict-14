@@ -25,7 +25,7 @@ export default class Smart extends AbstractView {
   }
 
   restoreHandlers() {
-    throw new Error('Abstract method not implemented: resetHandlers');
+    throw new Error('Abstract method not implemented: restoreHandlers');
   }
 
   updateElement() {

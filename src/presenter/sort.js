@@ -1,6 +1,6 @@
 import SortListView from '../view/sort-list.js';
 import {remove, renderElement, RenderPosition, replace} from '../utils/render.js';
-import {SortType, UpdateType} from '../utils/utils.js';
+import {SortType, UpdateType} from '../utils/const.js';
 
 export default class SortMoviesPresenter {
   constructor(siteMainElement, moviesModel, sortModel) {
@@ -37,6 +37,18 @@ export default class SortMoviesPresenter {
     }
     remove(this._sortList);
     this._sortList = null;
+  }
+
+  hide() {
+    if (this._sortList !== null) {
+      this._sortList.getElement().style.display = 'none';
+    }
+  }
+
+  show() {
+    if (this._sortList !== null) {
+      this._sortList.getElement().style.display = null;
+    }
   }
 
   _handleModelEvent() {

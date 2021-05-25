@@ -1,19 +1,21 @@
 import SiteMenuView from '../view/site-menu.js';
 import {remove, renderElement, RenderPosition, replace} from '../utils/render.js';
-import {FilterType, UpdateType} from '../utils/utils.js';
-import {filters} from '../mock/filter-data.js';
+import {FilterType, MenuItem, UpdateType} from '../utils/const.js';
+import {filters} from '../utils/const.js';
 
 
 export default class FiltersSiteMenu {
-  constructor(siteMainElement, filtersModel, moviesModel) {
+  constructor(siteMainElement, filtersModel, moviesModel, menuModel) {
     this._siteMainElement = siteMainElement;
     this._filterModel = filtersModel;
     this._moviesModel = moviesModel;
+    this._menuModel = menuModel;
 
     this._siteMenu = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._addStatisticClickHandler = this._addStatisticClickHandler.bind(this);
 
     this._moviesModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -27,6 +29,7 @@ export default class FiltersSiteMenu {
 
     this._siteMenu = new SiteMenuView(filters, this._filterModel.getFilter(), isEmptyList);
     this._siteMenu.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._siteMenu.setStatisticHandler(this._addStatisticClickHandler);
 
     if (prevSiteMenu === null) {
       renderElement(this._siteMainElement, this._siteMenu, RenderPosition.AFTERBEGIN);
@@ -41,11 +44,16 @@ export default class FiltersSiteMenu {
   }
 
   _handleFilterTypeChange(filterType) {
+    this._menuModel.setMenuItem(UpdateType.MAJOR, MenuItem.MOVIES);
     if (this._filterModel.getFilter() === filterType) {
       return;
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  _addStatisticClickHandler() {
+    this._menuModel.setMenuItem(UpdateType.MAJOR, MenuItem.STATISTICS);
   }
 
   _getFilters() {
