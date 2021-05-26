@@ -28,7 +28,7 @@ export default class FilmCard {
     this._handleAddFavoritesClick = this._handleAddFavoritesClick.bind(this);
     this._addCommentDeleteHandler = this._addCommentDeleteHandler.bind(this);
     this._addCommentHandler = this._addCommentHandler.bind(this);
-    this._openPopup = this._openPopup.bind(this);
+    this._openPopupHandler = this._openPopupHandler.bind(this);
     this._closePopup = this._closePopup.bind(this);
   }
 
@@ -48,12 +48,13 @@ export default class FilmCard {
     remove(prevFilmContent);
     if (this._popupStatus === popupStatus.OPEN) {
       replace(this._filmPopup, prevPopup);
+      this._openPopup();
       remove(prevPopup);
     }
   }
 
-  addComment(newComment) {
-    this._comments.push(newComment);
+  setComments(newComments) {
+    this._comments = newComments;
   }
 
   destroy() {
@@ -67,11 +68,9 @@ export default class FilmCard {
     }
   }
 
-  _openPopup() {
+  _openPopupHandler() {
     this._changeStatus();
-    this._filmPopup.setCloseEscHandler(this._closePopup);
-    this._siteBodyElement.appendChild(this._filmPopup.getElement());
-    this._siteBodyElement.classList.add('hide-overflow');
+    this._openPopup();
     this._popupStatus = popupStatus.OPEN;
     const api = new Api(END_POINT, AUTHORIZATION);
     api.getComments(this._film)
@@ -87,8 +86,13 @@ export default class FilmCard {
         );
       });
   }
+  _openPopup() {
+    this._filmPopup.setCloseEscHandler(this._closePopup);
+    this._siteBodyElement.appendChild(this._filmPopup.getElement());
+    this._siteBodyElement.classList.add('hide-overflow');
+  }
 
-  _closePopup () {
+  _closePopup() {
     if (this._popupStatus === popupStatus.CLOSE) {
       return;
     }
@@ -108,7 +112,7 @@ export default class FilmCard {
     this._filmPopup.setWatchedPopupHandler(this._handleAlreadyWatchedClick);
     this._filmPopup.setFavoritePopupHandler(this._handleAddFavoritesClick);
 
-    filmCard.setCloseClickHandler(this._openPopup);
+    filmCard.setCloseClickHandler(this._openPopupHandler);
     this._filmPopup.setCloseClickHandler(this._closePopup);
     return filmCard;
   }

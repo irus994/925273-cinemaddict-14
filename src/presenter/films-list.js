@@ -15,8 +15,6 @@ import LoadingView from '../view/loading.js';
 import EmptyFilmListView from '../view/empty-film-list.js';
 import StatsPresenter from '../presenter/stats.js';
 
-
-const FILMS_COUNT = 26;
 const FILMS_COUNT_START = 5;
 let renderedFilmCount = FILMS_COUNT_START;
 
@@ -117,7 +115,8 @@ export default class MovieList {
   }
 
   _renderShowMoreButton() {
-    if (FILMS_COUNT > FILMS_COUNT_START) {
+    const movies = this._getMovies();
+    if (movies.length > FILMS_COUNT_START) {
       const filmList = this._siteMainElement.querySelector('.films-list');
       renderElement(filmList, this._showMoreButton, RenderPosition.BEFOREEND);
 
@@ -192,24 +191,15 @@ export default class MovieList {
         {
           const {movieId, comment} = update;
           this._api.addComment(comment, movieId)
-            .then((userComment) => {
-              this._filmCardPresenter[movieId].addComment(comment);
+            .then((response) => {
+              this._filmCardPresenter[movieId].setComments(response.comments);
               if (this._filmCardPresenterTop[movieId]) {
-                this._filmCardPresenterTop[movieId].addComment(comment);
+                this._filmCardPresenterTop[movieId].setComments(response.comments);
               }
               if (this._filmCardPresenterComment[movieId]) {
-                this._filmCardPresenterComment[movieId].addComment(comment);
+                this._filmCardPresenterComment[movieId].setComments(response.comments);
               }
-              const movie = this._moviesModel.getMovies().find((movie) => {
-                return movie.id === movieId;
-              });
-              this._moviesModel.updateMovie(updateType, Object.assign(
-                {},
-                movie,
-                {
-                  comments: movie.comments.concat([userComment.id]),
-                },
-              ));
+              this._moviesModel.updateMovie(updateType, response.movie);
             });
         }
         break;

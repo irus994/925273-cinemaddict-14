@@ -7,6 +7,7 @@ import StatsUserRang from '../view/stats-user-rang.js';
 import StatsContainer from '../view/stats-container.js';
 import StatsFilterModel from '../model/stats-filter-model.js';
 import StatsChart from '../view/stats-chart.js';
+import {getDurationParts} from '../utils/utils.js';
 
 export default class StatsPresenter {
   constructor(siteMainElement, moviesModel) {
@@ -43,11 +44,13 @@ export default class StatsPresenter {
       .filter(filters[FilterType.HISTORY].predicate)
       .filter(this._getActiveFilter().predicate);
 
+    const [hours, minutes] = getDurationParts(this._getDurationSum(filteredMovies));
 
     this._statistic = new StatisticView({
       topGenre: this._getMostPopularGenre(filteredMovies),
       watchedFilms: filteredMovies.length,
-      sumDuration: this._getDurationSum(filteredMovies),
+      hours: hours,
+      minutes: minutes,
     });
 
     this._statsChart = new StatsChart(this._getGenrePopularity(filteredMovies));

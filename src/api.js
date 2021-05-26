@@ -45,7 +45,12 @@ export class Api {
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
-      .then(MoviesModel.adaptCommentToClient);
+      .then((response) => {
+        return {
+          comments: response.comments.map(MoviesModel.adaptCommentToClient),
+          movie: MoviesModel.adaptToClient(response.movie),
+        };
+      });
   }
 
   deleteComment(commentId) {
