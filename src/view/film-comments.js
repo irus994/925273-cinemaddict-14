@@ -1,9 +1,10 @@
 import Smart from './smart.js';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
-const createFilmComment = (comment) => {
-  const {emotion, author, date, text, isDeleting} = comment;
-  return `<li class="film-details__comment">
+const createFilmComment = (comment, data, hasError) => {
+  const {emotion, author, date, text} = comment;
+  const {isDeleting} = data;
+  return `<li class="film-details__comment ${hasError ? 'shake' : ''}">
                 <span class="film-details__comment-emoji">
                   <img src="/images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
                 </span>
@@ -19,15 +20,16 @@ const createFilmComment = (comment) => {
 };
 
 export default class FilmCommentView extends Smart {
-  constructor(comment) {
+  constructor(comment, hasError) {
     super();
     this._comment = comment;
+    this._hasError = hasError;
 
     this._addCommentDeleteHandler = this._addCommentDeleteHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmComment(this._comment);
+    return createFilmComment(this._comment, this._data, this._hasError);
   }
 
   restoreHandlers() {

@@ -1,32 +1,32 @@
 import Smart from './smart.js';
 import he from 'he';
 
-const createSelectReactionBlock = (emojis) => {
-  const {selectedSmile} = emojis;
-  return `<div class="film-details__new-comment">
+const createSelectReactionBlock = (reactionState, hasError) => {
+  const {selectedSmile, isLoading} = reactionState;
+  return `<div class="film-details__new-comment ${hasError ? 'shake' : ''}">
           <div class="film-details__add-emoji-label">${selectedSmile ? `<img src="images/emoji/${selectedSmile}.png" width="55" height="55" alt="emoji-smile">` : ''}</div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input" ${isLoading ? 'disabled' : '' } placeholder="Select reaction below and write comment here" name="comment"></textarea>
           </label>
 
           <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" ${selectedSmile === 'smile' ? 'checked' : ''} name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+            <input class="film-details__emoji-item visually-hidden" ${selectedSmile === 'smile' ? 'checked' : ''} ${isLoading ? 'disabled' : '' } name="comment-emoji" type="radio" id="emoji-smile" value="smile">
             <label class="film-details__emoji-label" for="emoji-smile">
               <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" ${selectedSmile === 'sleeping' ? 'checked' : ''} name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+            <input class="film-details__emoji-item visually-hidden" ${selectedSmile === 'sleeping' ? 'checked' : ''} ${isLoading ? 'disabled' : '' } name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
             <label class="film-details__emoji-label" for="emoji-sleeping">
               <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" ${selectedSmile === 'puke' ? 'checked' : ''} name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+            <input class="film-details__emoji-item visually-hidden" ${selectedSmile === 'puke' ? 'checked' : ''} ${isLoading ? 'disabled' : '' } name="comment-emoji" type="radio" id="emoji-puke" value="puke">
             <label class="film-details__emoji-label" for="emoji-puke">
               <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" ${selectedSmile === 'angry' ? 'checked' : ''} name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+            <input class="film-details__emoji-item visually-hidden" ${selectedSmile === 'angry' ? 'checked' : ''} ${isLoading ? 'disabled' : '' } name="comment-emoji" type="radio" id="emoji-angry" value="angry">
             <label class="film-details__emoji-label" for="emoji-angry">
               <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
             </label>
@@ -35,16 +35,17 @@ const createSelectReactionBlock = (emojis) => {
 };
 
 export default class SelectReactionView extends Smart {
-  constructor() {
+  constructor(hasError) {
     super();
-    this._data = {selectedSmile: 'smile'};
+    this._hasError = hasError;
+    this._data = {selectedSmile: 'smile', isLoading: false};
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
     this._addCommentHandler = this._addCommentHandler.bind(this);
     this.addEmojiHandlers();
   }
 
   getTemplate() {
-    return createSelectReactionBlock(this._data);
+    return createSelectReactionBlock(this._data, this._hasError);
   }
 
   _emojiClickHandler(evt) {
@@ -69,6 +70,7 @@ export default class SelectReactionView extends Smart {
     if ((evt.metaKey || evt.ctrlKey) && evt.keyCode == 13) {
       evt.preventDefault();
       evt.stopPropagation();
+      this.updateData({isLoading: true});
       this._callback.addCommentSubmit({
         emotion: this._getSelectedEmotion().value,
         text: he.encode(this.getElement().querySelector('.film-details__comment-input').value),

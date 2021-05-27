@@ -16,9 +16,8 @@ api.getMovies()
   .then((movies) => {
     moviesModel.setMovies(UpdateType.INIT, movies);
   })
-  .catch((error) => {
+  .catch(() => {
     moviesModel.setMovies(UpdateType.INIT, []);
-    console.log(error);
   });
 
 const moviesModel = new MoviesModel();

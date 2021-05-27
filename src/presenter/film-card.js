@@ -19,6 +19,8 @@ export default class FilmCard {
     this._changeData = changeData;
     this._changeStatus = changeStatus;
     this._comments = [];
+    this._deleteErrorCommentId = null;
+    this._hasCommentAddError = null;
 
     this._filmContent = null;
     this._popupStatus = popupStatus.CLOSE;
@@ -26,14 +28,19 @@ export default class FilmCard {
     this._handleAddWatchListClick = this._handleAddWatchListClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
     this._handleAddFavoritesClick = this._handleAddFavoritesClick.bind(this);
+    this._handleAddWatchListPopupClick = this._handleAddWatchListPopupClick.bind(this);
+    this._handleAlreadyWatchedPopupClick = this._handleAlreadyWatchedPopupClick.bind(this);
+    this._handleAddFavoritesPopupClick = this._handleAddFavoritesPopupClick.bind(this);
     this._addCommentDeleteHandler = this._addCommentDeleteHandler.bind(this);
     this._addCommentHandler = this._addCommentHandler.bind(this);
     this._openPopupHandler = this._openPopupHandler.bind(this);
     this._closePopup = this._closePopup.bind(this);
   }
 
-  init(film) {
+  init(film, deleteErrorCommentId, hasCommentAddError) {
     this._film = film;
+    this._deleteErrorCommentId = deleteErrorCommentId;
+    this._hasCommentAddError = hasCommentAddError;
 
     const prevFilmContent = this._filmContent;
     const prevPopup = this._filmPopup;
@@ -100,6 +107,11 @@ export default class FilmCard {
     this._siteBodyElement.removeChild(this._filmPopup.getElement());
     this._siteBodyElement.classList.remove('hide-overflow');
     this._popupStatus = popupStatus.CLOSE;
+    this._changeData(
+      UserAction.RE_RENDER,
+      UpdateType.MINOR,
+      this._film,
+    );
   }
 
   _createFilmCard(film) {
@@ -108,9 +120,9 @@ export default class FilmCard {
     filmCard.setWatchedHandler(this._handleAlreadyWatchedClick);
     filmCard.setFavoriteHandler(this._handleAddFavoritesClick);
     this._filmPopup = this._createPopupBlock(film);
-    this._filmPopup.setWatchListPopupHandler(this._handleAddWatchListClick);
-    this._filmPopup.setWatchedPopupHandler(this._handleAlreadyWatchedClick);
-    this._filmPopup.setFavoritePopupHandler(this._handleAddFavoritesClick);
+    this._filmPopup.setWatchListPopupHandler(this._handleAddWatchListPopupClick);
+    this._filmPopup.setWatchedPopupHandler(this._handleAlreadyWatchedPopupClick);
+    this._filmPopup.setFavoritePopupHandler(this._handleAddFavoritesPopupClick);
 
     filmCard.setCloseClickHandler(this._openPopupHandler);
     this._filmPopup.setCloseClickHandler(this._closePopup);
@@ -121,7 +133,7 @@ export default class FilmCard {
     const popupFilm = new PopupFilmView(film);
     const popupBlock = popupFilm.getElement().querySelector('.film-details__bottom-container');
     const filmCommentsBlock = new FilmCommentsBlockView(film.comments.length);
-    const selectReaction = new SelectReactionView();
+    const selectReaction = new SelectReactionView(this._hasCommentAddError);
     selectReaction.setCommentHandler(this._addCommentHandler);
     renderElement(popupBlock, filmCommentsBlock.getElement(), RenderPosition.BEFOREEND);
     const filmCommentsList = filmCommentsBlock.getElement().querySelector('.film-details__comments-list');
@@ -133,11 +145,10 @@ export default class FilmCard {
       if (comment === undefined) {
         return;
       }
-      const filmComment = new FilmCommentView(FilmCommentView.parseCommentToData(comment));
+      const filmComment = new FilmCommentView(FilmCommentView.parseCommentToData(comment), this._deleteErrorCommentId === comment.id);
       filmComment.setCommentDeleteHandler(this._addCommentDeleteHandler);
       renderElement(filmCommentsList, filmComment, RenderPosition.BEFOREEND);
     });
-
 
     renderElement(popupBlock, selectReaction.getElement(), RenderPosition.BEFOREEND);
     return popupFilm;
@@ -147,6 +158,24 @@ export default class FilmCard {
     this._changeData(
       UserAction.UPDATE_MOViE,
       UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          userDetails: Object.assign(
+            {},
+            this._film.userDetails,
+            {watchlist: !this._film.userDetails.watchlist},
+          ),
+        },
+      ),
+    );
+  }
+
+  _handleAddWatchListPopupClick() {
+    this._changeData(
+      UserAction.UPDATE_MOViE,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -182,10 +211,49 @@ export default class FilmCard {
     );
   }
 
+  _handleAlreadyWatchedPopupClick() {
+    this._changeData(
+      UserAction.UPDATE_MOViE,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          userDetails: Object.assign(
+            {},
+            this._film.userDetails,
+            {
+              alreadyWatched: !this._film.userDetails.alreadyWatched,
+              watchingDate: this._film.userDetails.alreadyWatched ? null : new Date(),
+            },
+          ),
+        },
+      ),
+    );
+  }
+
   _handleAddFavoritesClick() {
     this._changeData(
       UserAction.UPDATE_MOViE,
       UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          userDetails: Object.assign(
+            {},
+            this._film.userDetails,
+            {favorite: !this._film.userDetails.favorite},
+          ),
+        },
+      ),
+    );
+  }
+
+  _handleAddFavoritesPopupClick() {
+    this._changeData(
+      UserAction.UPDATE_MOViE,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,

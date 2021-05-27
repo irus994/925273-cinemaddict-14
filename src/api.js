@@ -37,7 +37,7 @@ export class Api {
       });
   }
 
-  addComment(comment, movieId)  {
+  addComment(comment, movieId) {
     return this._load({
       url: `comments/${movieId}`,
       method: Method.POST,

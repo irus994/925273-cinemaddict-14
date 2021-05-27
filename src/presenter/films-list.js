@@ -36,6 +36,8 @@ export default class MovieList {
     this._sortMoviesPresenter = {};
     this._isLoading = true;
     this._api = api;
+    this._commentDeleteError = null;
+    this._commentAddError = null;
 
     this._changeStatus = this._changeStatus.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -200,15 +202,28 @@ export default class MovieList {
                 this._filmCardPresenterComment[movieId].setComments(response.comments);
               }
               this._moviesModel.updateMovie(updateType, response.movie);
+            })
+            .catch(() => {
+              this._commentAddError = movieId;
+              this._moviesModel.reRender(updateType, this._getMovies().find((movie) => {
+                return movie.id === movieId;
+              }));
             });
         }
         break;
       case UserAction.DELETE_COMMENT: {
         const movieId = update.movieId;
         const commentId = update.commentId;
-        this._api.deleteComment(commentId).then(() => {
-          this._moviesModel.deleteComment(updateType, movieId, commentId);
-        });
+        this._api.deleteComment(commentId)
+          .then(() => {
+            this._moviesModel.deleteComment(updateType, movieId, commentId);
+          })
+          .catch(() => {
+            this._commentDeleteError = commentId;
+            this._moviesModel.reRender(updateType, this._getMovies().find((movie) => {
+              return movie.id === movieId;
+            }));
+          });
       }
         break;
     }
@@ -217,12 +232,12 @@ export default class MovieList {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._filmCardPresenter[data.id].init(data);
+        this._filmCardPresenter[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id);
         if (this._filmCardPresenterComment[data.id]) {
-          this._filmCardPresenterComment[data.id].init(data);
+          this._filmCardPresenterComment[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id);
         }
         if (this._filmCardPresenterTop[data.id]) {
-          this._filmCardPresenterTop[data.id].init(data);
+          this._filmCardPresenterTop[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id);
         }
         break;
       case UpdateType.MINOR:
@@ -239,6 +254,8 @@ export default class MovieList {
         this._render();
         break;
     }
+    this._commentDeleteError = null;
+    this._commentAddError = null;
   }
 
   destroy() {
