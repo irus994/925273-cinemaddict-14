@@ -37,10 +37,11 @@ export default class FilmCard {
     this._closePopup = this._closePopup.bind(this);
   }
 
-  init(film, deleteErrorCommentId, hasCommentAddError) {
+  init(film, deleteErrorCommentId, hasCommentAddError, commentData) {
     this._film = film;
     this._deleteErrorCommentId = deleteErrorCommentId;
     this._hasCommentAddError = hasCommentAddError;
+    this._commentData = commentData;
 
     const prevFilmContent = this._filmContent;
     const prevPopup = this._filmPopup;
@@ -133,7 +134,7 @@ export default class FilmCard {
     const popupFilm = new PopupFilmView(film);
     const popupBlock = popupFilm.getElement().querySelector('.film-details__bottom-container');
     const filmCommentsBlock = new FilmCommentsBlockView(film.comments.length);
-    const selectReaction = new SelectReactionView(this._hasCommentAddError);
+    const selectReaction = new SelectReactionView(this._hasCommentAddError, this._commentData);
     selectReaction.setCommentHandler(this._addCommentHandler);
     renderElement(popupBlock, filmCommentsBlock.getElement(), RenderPosition.BEFOREEND);
     const filmCommentsList = filmCommentsBlock.getElement().querySelector('.film-details__comments-list');

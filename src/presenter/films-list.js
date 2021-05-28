@@ -38,6 +38,7 @@ export default class MovieList {
     this._api = api;
     this._commentDeleteError = null;
     this._commentAddError = null;
+    this._commentAddDate = null;
 
     this._changeStatus = this._changeStatus.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -180,6 +181,7 @@ export default class MovieList {
   }
 
   _handleViewAction(actionType, updateType, update) {
+    this._commentAddDate = null;
     switch (actionType) {
       case UserAction.RE_RENDER:
         this._moviesModel.reRender(updateType, update);
@@ -204,6 +206,7 @@ export default class MovieList {
               this._moviesModel.updateMovie(updateType, response.movie);
             })
             .catch(() => {
+              this._commentAddDate = comment;
               this._commentAddError = movieId;
               this._moviesModel.reRender(updateType, this._getMovies().find((movie) => {
                 return movie.id === movieId;
@@ -232,12 +235,12 @@ export default class MovieList {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._filmCardPresenter[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id);
+        this._filmCardPresenter[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id, this._commentAddDate);
         if (this._filmCardPresenterComment[data.id]) {
-          this._filmCardPresenterComment[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id);
+          this._filmCardPresenterComment[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id, this._commentAddDate);
         }
         if (this._filmCardPresenterTop[data.id]) {
-          this._filmCardPresenterTop[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id);
+          this._filmCardPresenterTop[data.id].init(data, this._commentDeleteError, this._commentAddError === data.id, this._commentAddDate);
         }
         break;
       case UpdateType.MINOR:
@@ -256,6 +259,7 @@ export default class MovieList {
     }
     this._commentDeleteError = null;
     this._commentAddError = null;
+    this._commentAddDate = null;
   }
 
   destroy() {

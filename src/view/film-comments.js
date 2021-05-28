@@ -38,8 +38,8 @@ export default class FilmCommentView extends Smart {
 
   _addCommentDeleteHandler(evt) { //исправить название
     evt.preventDefault();
-    this._callback.deleteCommentClick(this._comment.id);
     this.updateData({isDeleting: true});
+    this._callback.deleteCommentClick(this._comment.id);
   }
 
   setCommentDeleteHandler(callback) {

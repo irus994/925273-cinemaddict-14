@@ -2,12 +2,12 @@ import Smart from './smart.js';
 import he from 'he';
 
 const createSelectReactionBlock = (reactionState, hasError) => {
-  const {selectedSmile, isLoading} = reactionState;
+  const {selectedSmile, isLoading, text} = reactionState;
   return `<div class="film-details__new-comment ${hasError ? 'shake' : ''}">
           <div class="film-details__add-emoji-label">${selectedSmile ? `<img src="images/emoji/${selectedSmile}.png" width="55" height="55" alt="emoji-smile">` : ''}</div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" ${isLoading ? 'disabled' : '' } placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input" ${isLoading ? 'disabled' : '' } placeholder="Select reaction below and write comment here" name="comment">${text}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
@@ -35,13 +35,20 @@ const createSelectReactionBlock = (reactionState, hasError) => {
 };
 
 export default class SelectReactionView extends Smart {
-  constructor(hasError) {
+  constructor(hasError, commentData) {
     super();
     this._hasError = hasError;
-    this._data = {selectedSmile: 'smile', isLoading: false};
+    this._data = {selectedSmile: 'smile', isLoading: false, text: ''};
+    if (commentData) {
+      this._data.selectedSmile = commentData.emotion;
+      this._data.text = commentData.text;
+    }
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
     this._addCommentHandler = this._addCommentHandler.bind(this);
-    this.addEmojiHandlers();
+    this._textChangeHandler = this._textChangeHandler.bind(this);
+    this._addEmojiHandlers();
+    this._addTextChangeHandler();
+    console.log(commentData)
   }
 
   getTemplate() {
@@ -55,15 +62,25 @@ export default class SelectReactionView extends Smart {
   }
 
   restoreHandlers() {
-    this.addEmojiHandlers();
+    this._addEmojiHandlers();
+    this._addTextChangeHandler();
     this.setCommentHandler(this._callback.addCommentSubmit);
   }
 
-  addEmojiHandlers() {
+  _addEmojiHandlers() {
     const emojis = this.getElement().querySelectorAll('.film-details__emoji-item');
     for (let i = 0; i < emojis.length; i++) {
       emojis[i].addEventListener('click', this._emojiClickHandler);
     }
+  }
+
+  _textChangeHandler(evt) {
+    this.updateData({text: evt.target.value});
+  }
+
+  _addTextChangeHandler() {
+    const textControl = this.getElement().querySelector('.film-details__comment-input');
+    textControl.addEventListener('change', this._textChangeHandler);
   }
 
   _addCommentHandler(evt) {
