@@ -48,7 +48,6 @@ export default class SelectReactionView extends Smart {
     this._textChangeHandler = this._textChangeHandler.bind(this);
     this._addEmojiHandlers();
     this._addTextChangeHandler();
-    console.log(commentData)
   }
 
   getTemplate() {
