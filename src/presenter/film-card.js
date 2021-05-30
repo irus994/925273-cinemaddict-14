@@ -164,7 +164,7 @@ export default class FilmCard {
 
   _handleAddWatchListClick() {
     this._changeData(
-      UserAction.UPDATE_MOViE,
+      UserAction.UPDATE_MOVIE,
       UpdateType.MINOR,
       Object.assign(
         {},
@@ -182,7 +182,7 @@ export default class FilmCard {
 
   _handleAddWatchListPopupClick() {
     this._changeData(
-      UserAction.UPDATE_MOViE,
+      UserAction.UPDATE_MOVIE,
       UpdateType.PATCH,
       Object.assign(
         {},
@@ -200,7 +200,7 @@ export default class FilmCard {
 
   _handleAlreadyWatchedClick() {
     this._changeData(
-      UserAction.UPDATE_MOViE,
+      UserAction.UPDATE_MOVIE,
       UpdateType.MINOR,
       Object.assign(
         {},
@@ -221,7 +221,7 @@ export default class FilmCard {
 
   _handleAlreadyWatchedPopupClick() {
     this._changeData(
-      UserAction.UPDATE_MOViE,
+      UserAction.UPDATE_MOVIE,
       UpdateType.PATCH,
       Object.assign(
         {},
@@ -242,7 +242,7 @@ export default class FilmCard {
 
   _handleAddFavoritesClick() {
     this._changeData(
-      UserAction.UPDATE_MOViE,
+      UserAction.UPDATE_MOVIE,
       UpdateType.MINOR,
       Object.assign(
         {},
@@ -260,7 +260,7 @@ export default class FilmCard {
 
   _handleAddFavoritesPopupClick() {
     this._changeData(
-      UserAction.UPDATE_MOViE,
+      UserAction.UPDATE_MOVIE,
       UpdateType.PATCH,
       Object.assign(
         {},

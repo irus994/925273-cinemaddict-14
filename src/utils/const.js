@@ -43,7 +43,7 @@ export const SortType = {
 export const UserAction = {
   ADD_COMMENT: 'add',
   DELETE_COMMENT: 'delete',
-  UPDATE_MOViE: 'update',
+  UPDATE_MOVIE: 'update',
   RE_RENDER: 're-render',
 };
 

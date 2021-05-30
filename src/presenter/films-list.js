@@ -147,7 +147,7 @@ export default class MovieList {
       case UserAction.RE_RENDER:
         this._moviesModel.reRender(updateType, update);
         break;
-      case UserAction.UPDATE_MOViE:
+      case UserAction.UPDATE_MOVIE:
         this._api.updateMovie(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
         });
