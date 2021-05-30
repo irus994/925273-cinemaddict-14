@@ -1,9 +1,17 @@
 
+export const UserRankThreshold = {
+  NONE: 0,
+  NOVICE: 1,
+  FAN: 11,
+  MOVIE_BUFF: 21,
+};
+
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  NONE: 'NONE',
 };
 
 export const MenuItem = {

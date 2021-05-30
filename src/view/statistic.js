@@ -28,8 +28,4 @@ export default class StatisticView extends AbstractView {
   getTemplate() {
     return createStatisticTemplate(this._stats);
   }
-
-  setNumberOfFilmsWatched(numberOfFilmsWatched) {
-    this._numberOfFilmsWatched = numberOfFilmsWatched;
-  }
 }

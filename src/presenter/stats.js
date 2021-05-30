@@ -78,6 +78,9 @@ export default class StatsPresenter {
 
     remove(this._statsUserRang);
     this._statsUserRang = null;
+
+    remove(this._statsChart);
+    this._statsChart = null;
   }
 
   _getGenrePopularity(movies) {

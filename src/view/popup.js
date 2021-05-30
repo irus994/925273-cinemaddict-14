@@ -2,6 +2,8 @@ import {getTimeFromMinutes} from '../utils/utils.js';
 import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
 
+const ESC_KEY_CODE = 27;
+
 const createPopupFilm = (film) => {
   const {name, data, duration, description, poster, director, screenwriters, actors, ageRating, filmGenre, rating, country, originName, userDetails} = film;
   return `
@@ -113,7 +115,7 @@ export default class PopupFilmView extends  AbstractView {
   }
 
   _editEscClickHandler(evt) {
-    if (evt.keyCode === 27) {
+    if (evt.keyCode === ESC_KEY_CODE) {
       evt.preventDefault();
       this._callback.editEscClick();
     }

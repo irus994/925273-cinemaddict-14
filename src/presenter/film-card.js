@@ -7,7 +7,7 @@ import SelectReactionView from '../view/select-reaction.js';
 import {UpdateType, UserAction} from '../utils/const.js';
 import {Api, AUTHORIZATION, END_POINT} from '../api.js';
 
-const popupStatus = {
+const PopupStatus = {
   CLOSE: 'CLOSE',
   OPEN: 'OPEN',
 };
@@ -23,7 +23,7 @@ export default class FilmCard {
     this._hasCommentAddError = null;
 
     this._filmContent = null;
-    this._popupStatus = popupStatus.CLOSE;
+    this._popupStatus = PopupStatus.CLOSE;
 
     this._handleAddWatchListClick = this._handleAddWatchListClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
@@ -34,7 +34,7 @@ export default class FilmCard {
     this._addCommentDeleteHandler = this._addCommentDeleteHandler.bind(this);
     this._addCommentHandler = this._addCommentHandler.bind(this);
     this._openPopupHandler = this._openPopupHandler.bind(this);
-    this._closePopup = this._closePopup.bind(this);
+    this._closePopupHandler = this._closePopupHandler.bind(this);
   }
 
   init(film, deleteErrorCommentId, hasCommentAddError, commentData) {
@@ -54,9 +54,10 @@ export default class FilmCard {
     }
     replace(this._filmContent, prevFilmContent);
     remove(prevFilmContent);
-    if (this._popupStatus === popupStatus.OPEN) {
+    if (this._popupStatus === PopupStatus.OPEN) {
       replace(this._filmPopup, prevPopup);
       this._openPopup();
+      prevPopup.removeCloseEscHandler();
       remove(prevPopup);
     }
   }
@@ -71,7 +72,7 @@ export default class FilmCard {
   }
 
   resetView() {
-    if (this._popupStatus !== popupStatus.CLOSE) {
+    if (this._popupStatus !== PopupStatus.CLOSE) {
       this._closePopup();
     }
   }
@@ -79,7 +80,6 @@ export default class FilmCard {
   _openPopupHandler() {
     this._changeStatus();
     this._openPopup();
-    this._popupStatus = popupStatus.OPEN;
     const api = new Api(END_POINT, AUTHORIZATION);
     api.getComments(this._film)
       .then((comments) => {
@@ -94,26 +94,33 @@ export default class FilmCard {
         );
       });
   }
+
   _openPopup() {
-    this._filmPopup.setCloseEscHandler(this._closePopup);
+    this._popupStatus = PopupStatus.OPEN;
+    this._filmPopup.setCloseEscHandler(this._closePopupHandler);
     this._siteBodyElement.appendChild(this._filmPopup.getElement());
     this._siteBodyElement.classList.add('hide-overflow');
   }
 
   _closePopup() {
-    if (this._popupStatus === popupStatus.CLOSE) {
+    if (this._popupStatus === PopupStatus.CLOSE) {
       return;
     }
     this._filmPopup.removeCloseEscHandler();
     this._siteBodyElement.removeChild(this._filmPopup.getElement());
     this._siteBodyElement.classList.remove('hide-overflow');
-    this._popupStatus = popupStatus.CLOSE;
+    this._popupStatus = PopupStatus.CLOSE;
+  }
+
+  _closePopupHandler() {
+    this._closePopup();
     this._changeData(
       UserAction.RE_RENDER,
       UpdateType.MINOR,
       this._film,
     );
   }
+
 
   _createFilmCard(film) {
     const filmCard = new FilmCardView(film);
@@ -126,7 +133,7 @@ export default class FilmCard {
     this._filmPopup.setFavoritePopupHandler(this._handleAddFavoritesPopupClick);
 
     filmCard.setCloseClickHandler(this._openPopupHandler);
-    this._filmPopup.setCloseClickHandler(this._closePopup);
+    this._filmPopup.setCloseClickHandler(this._closePopupHandler);
     return filmCard;
   }
 

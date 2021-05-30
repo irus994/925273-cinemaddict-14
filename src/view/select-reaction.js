@@ -1,6 +1,8 @@
 import Smart from './smart.js';
 import he from 'he';
 
+const ENTER_KEY_CODE = 13;
+
 const createSelectReactionBlock = (reactionState, hasError) => {
   const {selectedSmile, isLoading, text} = reactionState;
   return `<div class="film-details__new-comment ${hasError ? 'shake' : ''}">
@@ -83,7 +85,7 @@ export default class SelectReactionView extends Smart {
   }
 
   _addCommentHandler(evt) {
-    if ((evt.metaKey || evt.ctrlKey) && evt.keyCode == 13) {
+    if ((evt.metaKey || evt.ctrlKey) && evt.keyCode === ENTER_KEY_CODE) {
       evt.preventDefault();
       evt.stopPropagation();
       this.updateData({isLoading: true});
