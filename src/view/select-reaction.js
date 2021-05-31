@@ -76,12 +76,12 @@ export default class SelectReactionView extends Smart {
   }
 
   _textChangeHandler(evt) {
-    this.updateData({text: evt.target.value});
+    this.updateData({text: evt.target.value}, true);
   }
 
   _addTextChangeHandler() {
     const textControl = this.getElement().querySelector('.film-details__comment-input');
-    textControl.addEventListener('change', this._textChangeHandler);
+    textControl.addEventListener('input', this._textChangeHandler);
   }
 
   _addCommentHandler(evt) {
